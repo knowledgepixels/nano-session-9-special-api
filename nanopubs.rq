@@ -22,7 +22,7 @@ select ?np ?nplabel ?nanodashlink ?userid ?username ?date where {
   graph npa:graph {
     ?np dct:creator ?__userid_iri .
   }
-  service <https://query.np.trustyuri.net/repo/type/77757cabf6184c51c20b8b0fe5dc5e1365b7f628448335184ad54319a0affdfc> {  # (type: http://purl.org/nanopub/x/declaredBy)
+  optional { service <https://query.np.trustyuri.net/repo/type/77757cabf6184c51c20b8b0fe5dc5e1365b7f628448335184ad54319a0affdfc> {  # (type: http://purl.org/nanopub/x/declaredBy)
     graph npa:graph {
       ?i_np npa:hasValidSignatureForPublicKey ?pubkey ;
         np:hasAssertion ?i_assertion .
@@ -33,7 +33,7 @@ select ?np ?nplabel ?nanodashlink ?userid ?username ?date where {
     graph ?i_assertion {
       ?__userid_iri foaf:name ?username .
     }
-  }
+  } }
   bind(?__userid_iri as ?userid)
   bind(uri(concat("https://nanodash.petapico.org/explore?79&id=", str(?np))) as ?nanodashlink)
 }
