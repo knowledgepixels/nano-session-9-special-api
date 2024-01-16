@@ -1,0 +1,39 @@
+#+ endpoint: https://query.np.trustyuri.net/repo/type/fa9c708bf6278f7b7809e5b017302857bf2816d99daffe39a6a176ab0b28e555
+#    (type: https://nanopub.net/sessions/#nano-session-9-special)
+
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix np: <http://www.nanopub.org/nschema#>
+prefix npa: <http://purl.org/nanopub/admin/>
+prefix npx: <http://purl.org/nanopub/x/>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix dct: <http://purl.org/dc/terms/>
+prefix foaf: <http://xmlns.com/foaf/0.1/>
+
+select ?np ?nplabel ?userid ?username ?date where {
+  graph npa:graph {
+    ?np rdfs:label ?nplabel ;
+        npa:hasValidSignatureForPublicKey ?pubkey ;
+        dct:created ?date ;
+        np:hasPublicationInfo ?pubinfo .
+    filter not exists { ?npx npx:invalidates ?np ; npa:hasValidSignatureForPublicKey ?pubkey . }
+    filter not exists { ?np npx:hasNanopubType npx:ExampleNanopub . }
+    filter not exists { ?np npx:hasNanopubType npx:retracts . }
+  }
+  graph npa:graph {
+    ?np dct:creator ?__userid_iri .
+  }
+  service <https://query.np.trustyuri.net/repo/type/77757cabf6184c51c20b8b0fe5dc5e1365b7f628448335184ad54319a0affdfc> {  # (type: http://purl.org/nanopub/x/declaredBy)
+    graph npa:graph {
+      ?i_np npa:hasValidSignatureForPublicKey ?pubkey ;
+        np:hasAssertion ?i_assertion .
+      filter not exists { ?i_npx npx:invalidates ?i_np ; npa:hasValidSignatureForPublicKey ?pubkey . }
+      filter not exists { ?i_np npx:hasNanopubType npx:ExampleNanopub . }
+      filter not exists { ?i_np npx:hasNanopubType npx:retracts . }
+    }
+    graph ?i_assertion {
+      ?__userid_iri foaf:name ?username .
+    }
+  }
+  bind(?__userid_iri as ?userid)
+}
+order by desc(?date)
