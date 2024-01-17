@@ -11,16 +11,13 @@ prefix foaf: <http://xmlns.com/foaf/0.1/>
 
 select ?np ?nplabel ?nanodashlink ?userid ?username ?date where {
   graph npa:graph {
-    ?np rdfs:label ?nplabel ;
-        npa:hasValidSignatureForPublicKey ?pubkey ;
-        dct:created ?date ;
-        np:hasPublicationInfo ?pubinfo .
+    ?np rdfs:label ?nplabel .
+    ?np npa:hasValidSignatureForPublicKey ?pubkey .
+    ?np dct:created ?date .
+    ?np dct:creator ?__userid_iri .
     filter not exists { ?npx npx:invalidates ?np ; npa:hasValidSignatureForPublicKey ?pubkey . }
     filter not exists { ?np npx:hasNanopubType npx:ExampleNanopub . }
     filter not exists { ?np npx:hasNanopubType npx:retracts . }
-  }
-  graph npa:graph {
-    ?np dct:creator ?__userid_iri .
   }
   optional { service <https://query.np.trustyuri.net/repo/type/77757cabf6184c51c20b8b0fe5dc5e1365b7f628448335184ad54319a0affdfc> {  # (type: http://purl.org/nanopub/x/declaredBy)
     graph npa:graph {
